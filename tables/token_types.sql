@@ -1,0 +1,4 @@
+CREATE TABLE token_types (
+    id SMALLINT NOT NULL PRIMARY KEY,
+    type VARCHAR(20) UNIQUE,
+);

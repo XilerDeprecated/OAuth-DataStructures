@@ -1,0 +1,5 @@
+CREATE TABLE redirects (
+    id VARCHAR(15) NOT NULL PRIMARY KEY,
+    app VARCHAR(15) REFERENCES app (id),
+    target VARCHAR(512) NOT NULL
+);
