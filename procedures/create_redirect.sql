@@ -1,22 +1,18 @@
-CREATE
-OR REPLACE PROCEDURE create_redirect(app VARCHAR(15), target VARCHAR(512)) AS $ $ DECLARE code TEXT;
-
-BEGIN LOOP code := generate_token(4);
-
+CREATE OR REPLACE PROCEDURE public.create_redirect(IN app character varying, IN target character varying)
+    LANGUAGE 'plpgsql'
+    
+AS $BODY$
+DECLARE
+    code TEXT;
 BEGIN
-INSERT INTO
-    redirects (id, app, target)
-VALUES
-    (code, app, target);
-
-EXIT;
-
-EXCEPTION
-WHEN unique_violation THEN
+    loop
+        code := generate_token(4);
+        BEGIN
+            INSERT INTO redirects (id, app, target) VALUES (code, app, target);
+            EXIT;
+        EXCEPTION
+            WHEN unique_violation THEN
+        END;
+    end loop;
 END;
-
-END LOOP;
-
-END;
-
-$ $ LANGUAGE plpgsql;
+$BODY$;

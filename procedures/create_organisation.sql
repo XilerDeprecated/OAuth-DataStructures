@@ -1,22 +1,18 @@
-CREATE
-OR REPLACE PROCEDURE create_organisation(owner UUID, name VARCHAR(64)) AS $ $ DECLARE code TEXT;
-
-BEGIN LOOP code := generate_token(14);
-
+CREATE OR REPLACE PROCEDURE public.create_organisation(IN owner uuid, IN name character varying)
+    LANGUAGE 'plpgsql'
+    
+AS $BODY$
+DECLARE
+    code TEXT;
 BEGIN
-INSERT INTO
-    organisations (id, owner, name)
-VALUES
-    (code, owner, name);
-
-EXIT;
-
-EXCEPTION
-WHEN unique_violation THEN
+    loop
+        code := generate_token(14);
+        BEGIN
+            INSERT INTO organisations (id, owner, name) VALUES (code, owner, name);
+            EXIT;
+        EXCEPTION
+            WHEN unique_violation THEN
+        END;
+    end loop;
 END;
-
-END LOOP;
-
-END;
-
-$ $ LANGUAGE plpgsql;
+$BODY$;

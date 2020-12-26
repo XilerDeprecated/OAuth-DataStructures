@@ -1,22 +1,18 @@
-CREATE
-OR REPLACE PROCEDURE create_app(organisation VARCHAR(15)) AS $ $ DECLARE code TEXT;
-
-BEGIN LOOP code := generate_token(5);
-
+CREATE OR REPLACE PROCEDURE public.create_app(IN organisation character varying)
+    LANGUAGE 'plpgsql'
+    
+AS $BODY$
+DECLARE
+    code TEXT;
 BEGIN
-INSERT INTO
-    apps (id, organisation)
-VALUES
-    (code, organisation);
-
-EXIT;
-
-EXCEPTION
-WHEN unique_violation THEN
+    loop
+        code := generate_token(5);
+        BEGIN
+            INSERT INTO apps (id, organisation) VALUES (code, organisation);
+            EXIT;
+        EXCEPTION
+            WHEN unique_violation THEN
+        END;
+    end loop;
 END;
-
-END LOOP;
-
-END;
-
-$ $ LANGUAGE plpgsql;
+$BODY$;
